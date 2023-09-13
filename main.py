@@ -29,13 +29,13 @@ def home():
     return jsonify(status={"success": 200})
 
 
-@app.route("/users")
+@app.route("/api")
 def all_data():
     results = db.session.execute(db.select(User)).scalars().all()
     return jsonify(users=[user.to_dict() for user in results])
 
 
-@app.route("/api", methods=['GET', 'POST'])
+@app.route("/api/add-users", methods=['GET', 'POST'])
 def add_user():
     name = request.args.get('name')
 
@@ -93,6 +93,5 @@ def update_user(user_id):
     )
 
 
-# postgres://stage_two_db_user:edwSZcnAK9hateQIf37PELFoNOJeTBrQ@dpg-ck05l7fhdsdc73d0husg-a.oregon-postgres.render.com/stage_two_db
 if __name__ == "__main__":
     app.run(debug=True)
