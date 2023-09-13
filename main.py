@@ -8,13 +8,14 @@ app = Flask(__name__)
 db = SQLAlchemy()
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DB_URI", "sqlite:///stage_two.db")
 
-# "sqlite:///stage_two.db"
+
 db.init_app(app)
 
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
+    value = db.Column(db.String, )
 
     def to_dict(self):
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
@@ -35,11 +36,11 @@ def all_data():
     return jsonify(users=[user.to_dict() for user in results])
 
 
-@app.route("/api/add-users", methods=['GET', 'POST'])
+@app.route("/api", methods=['GET', 'POST'])
 def add_user():
     name = request.args.get('name')
-
-    new_user = User(name=name)
+    value = request.args.get('value')
+    new_user = User(name=name, value=value)
 
     db.session.add(new_user)
     db.session.commit()
@@ -61,7 +62,7 @@ def get_user(user_id):
     )
 
 
-@app.route("/api/delete/<int:user_id>", methods=['GET', 'DELETE'])
+@app.route("/api/<int:user_id>", methods=['GET', 'DELETE'])
 def delete_user(user_id):
     user = User.query.get(user_id)
 
@@ -76,13 +77,15 @@ def delete_user(user_id):
     )
 
 
-@app.route("/api/update-user/<int:user_id>", methods=['GET', 'PUT'])
+@app.route("/api/<int:user_id>", methods=['GET', 'PUT'])
 def update_user(user_id):
     user = User.query.get(user_id)
     name = request.args.get('name')
+    value = request.args.get("value")
 
     if user:
         user.name = user.name if name is None else name
+        user.value = user.value if value is None else value
 
         db.session.commit()
         return jsonify(
