@@ -93,6 +93,5 @@ def update_user(user_id):
     )
 
 
-# postgres://stage_two_db_user:edwSZcnAK9hateQIf37PELFoNOJeTBrQ@dpg-ck05l7fhdsdc73d0husg-a.oregon-postgres.render.com/stage_two_db
 if __name__ == "__main__":
     app.run(debug=True)
